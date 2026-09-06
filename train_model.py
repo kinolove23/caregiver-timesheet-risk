@@ -37,7 +37,7 @@ X_test_s = scaler.transform(X_test)
 
 results = {}
 
-# --- Logistic Regression ---
+#Logistic Regression
 logreg = LogisticRegression(max_iter=1000, random_state=42)
 logreg.fit(X_train_s, y_train)
 pred_lr = logreg.predict(X_test_s)
@@ -51,7 +51,7 @@ results["logistic_regression"] = {
     "roc_auc": roc_auc_score(y_test, proba_lr),
 }
 
-# --- Random Forest ---
+#Random Forest 
 rf = RandomForestClassifier(n_estimators=300, max_depth=8, random_state=42)
 rf.fit(X_train, y_train)
 pred_rf = rf.predict(X_test)
@@ -70,7 +70,7 @@ print(json.dumps(results, indent=2))
 with open("reports/metrics.json", "w") as f:
     json.dump(results, f, indent=2)
 
-# --- Feature importance (Random Forest) ---
+# Feature importance (Random Forest)
 importances = pd.Series(rf.feature_importances_, index=feature_cols).sort_values(ascending=False)
 plt.figure(figsize=(7, 5))
 importances.plot(kind="barh")
@@ -81,7 +81,7 @@ plt.tight_layout()
 plt.savefig("reports/feature_importance.png", dpi=150)
 plt.close()
 
-# --- ROC curves ---
+#ROC curves
 plt.figure(figsize=(6, 5))
 for name, proba in [("Logistic Regression", proba_lr), ("Random Forest", proba_rf)]:
     fpr, tpr, _ = roc_curve(y_test, proba)
@@ -96,7 +96,7 @@ plt.tight_layout()
 plt.savefig("reports/roc_curve.png", dpi=150)
 plt.close()
 
-# --- Confusion matrix (Logistic Regression, chosen as production model) ---
+# Confusion matrix (Logistic Regression, chosen as production model)
 cm = confusion_matrix(y_test, pred_lr)
 disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=["OK", "Needs Review"])
 disp.plot(cmap="Blues")
@@ -105,7 +105,7 @@ plt.tight_layout()
 plt.savefig("reports/confusion_matrix.png", dpi=150)
 plt.close()
 
-# --- Save logistic regression coefficients for the interactive dashboard (JS reimplementation) ---
+#  Save logistic regression coefficients for the interactive dashboard (JS reimplementation) 
 coef_export = {
     "features": feature_cols,
     "coefficients": logreg.coef_[0].tolist(),
